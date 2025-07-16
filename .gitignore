@@ -1,0 +1,82 @@
+# Ignore any file starting with 3dec
+3dec*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Mamba/Conda environment
+.envs/
+*/envs/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Pipeline outputs
+data/
+output/
+results/
+
+# Temporary files
+tmp/
+temp/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Environment variable files
+.env
+.env.local

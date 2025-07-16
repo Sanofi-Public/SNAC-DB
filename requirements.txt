@@ -1,0 +1,6 @@
+biopython>=1.85
+scipy
+tqdm
+pytest
+pandas
+networkx
