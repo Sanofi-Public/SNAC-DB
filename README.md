@@ -11,7 +11,7 @@ Specifically, the repository supports:
 
 All pipelines are orchestrated via bash scripts, but underlying Python modules provide granular control for customization and debugging.
 
-#### The curated version of the ready-to-use SNAC-DB dataset is available at: [https://zenodo.org/uploads/15870003](https://zenodo.org/uploads/15870003)
+#### The curated version of the ready-to-use SNAC-DB dataset is available at: [https://zenodo.org/records/16226208](https://zenodo.org/records/16226208)
 
 ---
 
