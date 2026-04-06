@@ -49,7 +49,7 @@ def structure_priority(struct_name, path):
     1. More total residues (more complete structure) - weight 500
     2. Fewer missing residues (better quality) - weight 100
     3. Bioassembly over ASU - bonus 1000 vs 500
-    4. Lower bioassembly/ASU number
+    4. Lower bioassembly number
     """
     npy_file = Path(path) / f"{struct_name}-atom37.npy"
     total_res, missing_res = get_structure_completeness(npy_file)
@@ -61,20 +61,14 @@ def structure_priority(struct_name, path):
     score -= missing_res * 100
     
     # Tertiary: prefer bioassembly over ASU
-    if '-BIO' in struct_name:
-        score += 1000
-        # Lower BIO number preferred
-        try:
-            bio_num = int(struct_name.split('-BIO')[1].split('-')[0])
-            score -= bio_num
-        except:
-            pass
-    elif '-ASU' in struct_name:
+    if '-ASU0' in struct_name:
         score += 500
+    elif '-ASU' in struct_name:
+        score += 1000
         # Lower ASU number preferred
         try:
-            asu_num = int(struct_name.split('-ASU')[1].split('-')[0])
-            score -= asu_num
+            bio_num = int(struct_name.split('-ASU')[1].split('-')[0])
+            score -= bio_num
         except:
             pass
     
