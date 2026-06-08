@@ -781,7 +781,7 @@ def main():
 
     # running process_pdb through parallel function
     pdb_names = sorted(df["Name"].values)
-    cpu_parallel = ParallelProcessorForCPUBoundTasks(pipeline_func, max_workers=48)
+    cpu_parallel = ParallelProcessorForCPUBoundTasks(pipeline_func, max_workers=int(os.environ.get("SNACDB_MAX_WORKERS", 48)))
     processed_rows = cpu_parallel.process(pdb_names, df, complex_dir, filter_dir, pdb_utils)
     
     # saving the recorded information for each structure into the csv

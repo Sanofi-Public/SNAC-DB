@@ -7,6 +7,7 @@ import itertools
 import copy
 import argparse
 import shutil
+import scipy.spatial
 from itertools import chain as Chain
 from snacdb.utils.pdb_utils_clean_parse import PDBUtils, dict_to_structure
 from snacdb.utils.sequence_utils import chain_dict_to_VH_VL_Ag_categories, get_region_splits_anarci
@@ -35,6 +36,29 @@ def nan_any(contact_map, axis=-1):
     result[all_nan_mask] = np.nan  # Assign NaN where all values were NaN
 
     return result
+
+
+def has_resolved_ca(domain):
+    """
+    Checks whether a chain/domain has at least one resolved alpha-carbon.
+
+    Variable domains of single-chain constructs (e.g., scFv/scDb) can be
+    entirely unresolved in the deposited coordinates yet retain a full SEQRES
+    sequence. Such a domain has an all-NaN atom37 array. Emitting it as a ligand
+    produces a phantom, coordinate-less complex that also evades FoldSeek
+    redundancy removal, so it must be filtered out.
+
+    Args:
+        domain (dict): Chain/domain dictionary containing an 'atom37' array
+         of shape (n_res, 37, 3).
+
+    Returns:
+        bool: True if at least one alpha-carbon (atom index 1) is resolved.
+    """
+    coords = domain.get("atom37")
+    if coords is None or len(coords) == 0:
+        return False
+    return not bool(np.isnan(coords[:, 1, :]).all())
 
 
 def get_contact_map_atom37(coord_chain1, coord_chain2, cutoff=8.0, alpha_carbon=True):
@@ -489,6 +513,14 @@ def pipeline_func(pdb_id, df, pdb_curated, complex_dir, pdb_utils):
     # solving for all the complexes in the structure
     ab_rows = []
     for Ab in Ab_complexes:  # determing all the complexes in a structure
+        # Skip ligands whose heavy chain has no resolved alpha-carbons. Unresolved
+        # variable domains of single-chain constructs (scFv/scDb) are retained via
+        # SEQRES with all-NaN coordinates; emitting them produces phantom,
+        # coordinate-less complexes that also evade FoldSeek redundancy removal.
+        heavy_domain = chain_dict["VH"][Ab[0]] if Ab in VH_VL_pairs else chain_dict["VH"][Ab]
+        if not has_resolved_ca(heavy_domain):
+            print(f"Skipping ligand with no resolved CA atoms in heavy chain: {pdb_id} {Ab}")
+            continue
         # test for replicate ligand IDS
         if Ab in VH_VL_pairs:
             if chain_dict["VH"][Ab[0]]["seq"] == "" or chain_dict["VL"][Ab[1]]["seq"] == "":
@@ -553,7 +585,7 @@ def main():
 
     # running process_pdb through parallel function
     pdb_names = sorted(df["Name"].values)
-    cpu_parallel = ParallelProcessorForCPUBoundTasks(pipeline_func, max_workers=48)
+    cpu_parallel = ParallelProcessorForCPUBoundTasks(pipeline_func, max_workers=int(os.environ.get("SNACDB_MAX_WORKERS", 48)))
     processed_rows = cpu_parallel.process(pdb_names, df, pdb_processed, complex_dir, pdb_utils)
 
     # saving the recorded information for each structure into the csv

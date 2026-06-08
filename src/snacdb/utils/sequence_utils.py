@@ -201,4 +201,18 @@ def chain_dict_to_VH_VL_Ag_categories(
             else:
                 chain_dict['Ag'][key] = val
 
+    # αβ-TCR repair: ANARCI frequently mistypes a TCR α chain as δ ('D') because
+    # the TRAV/TRDV gene loci overlap. δ is only genuinely heavy in a γδ TCR
+    # (paired with γ='G'). If the structure has a β ('B') and no γ ('G'), any 'D'
+    # domain is an αβ TCR's α chain that should pair with β — move it to VL so the
+    # downstream contact-based pairing can pair β(VH)+α(VL) into a VH-VL Ab instead
+    # of emitting two lone "VHH" ligands. The framework-contact gate in the pairing
+    # step still decides whether they actually form a pair.
+    if not override_assignments:
+        ctypes_present = {v.get('chain_type') for v in chain_dict['VH'].values()} \
+            | {v.get('chain_type') for v in chain_dict['VL'].values()}
+        if 'B' in ctypes_present and 'G' not in ctypes_present:
+            for key in [k for k, v in chain_dict['VH'].items() if v.get('chain_type') == 'D']:
+                chain_dict['VL'][key] = chain_dict['VH'].pop(key)
+
     return chain_dict
