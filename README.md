@@ -445,7 +445,26 @@ We would like to acknowledge the developers of the following tools and libraries
 ---
 
 ## Citations
-This current work has been accepted as part of the workshop [Data World](https://icml.cc/virtual/2025/workshop/39966) in the International Machine Learning Conference (ICML). There is future plans to submit this work for publication as well. For now please use this citation when referencing our work:
+
+The full manuscript has been published in *Protein Science* (2026). Please cite the journal article when referencing this work:
+
+```bibtex
+@article{gupta2026snacdb,
+  author = {Gupta, Abhinav and Rivero, Bryan Munoz and Li, Ruijiang and Roel-Touris, Jorge and Nanfack, Yves Fomekong and Wendt, Maria and Qiu, Yu and Furtmann, Norbert},
+  title = {SNAC-DB: An ML-ready database for antibody and NANOBODY® VHH–antigen complexes with expanded structural diversity and real-world benchmarking},
+  journal = {Protein Science},
+  volume = {35},
+  number = {7},
+  pages = {e70655},
+  keywords = {antibody–antigen complexes, benchmarking, data curation, machine learning, NANOBODY® VHH–antigen complexes, Protein Data Bank, structure prediction},
+  doi = {https://doi.org/10.1002/pro.70655},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/pro.70655},
+  eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/pro.70655},
+  year = {2026}
+}
+```
+
+An earlier version of this work was accepted at the [DataWorld workshop](https://icml.cc/virtual/2025/workshop/39966) at ICML 2025:
 
 ```bibtex
 @inproceedings{
